@@ -5,7 +5,7 @@
 
 #define LOG_LOCAL_LEVEL ESP_LOG_ERROR
 
-walze *rolInit(unsigned int rol[2], unsigned int seq[2], unsigned int quantity) {
+walze *rolInit(unsigned int rol[3], unsigned int seq[3], unsigned int quantity) {
     static const char *TAG = "rolInit";
     walze *w = malloc(5 * sizeof(walze));
     if (w == NULL) {
@@ -103,10 +103,8 @@ char rollR(walze *w, unsigned int rol, char let) {
 }
 
 char gear(walze *w, char let, unsigned int quantity) {
-    static const char *TAG = "gear";
+    // static const char *TAG = "gear";
     turnRoll(w);
-    ESP_LOGI(TAG, "Rotor %d Posicao: %d", 0, (w+0)->pos);
-    ESP_LOGI(TAG, "Rotor %d Posicao: %d", 1, (w+1)->pos);
     // let = socket(let);
     for (unsigned int a = 0; a < quantity; a++) {
         let = rollL(w, a, let);
@@ -165,8 +163,8 @@ void turnRoll(walze *w) {
         (w+1)->pos++;
         if ((w+1)->pos > 3){
             (w+1)->pos = 0;
-            // (w+2)->pos++;
-            // if ((w+2)->pos > 3) (w+2)->pos = 0;
+            (w+2)->pos++;
+            if ((w+2)->pos > 3) (w+2)->pos = 0;
         }
     }
 }
