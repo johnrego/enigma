@@ -26,12 +26,6 @@ walze *rolInit(unsigned int rol[3], unsigned int seq[3]) {
     (w+4)->number = 4;
     (w+4)->inMac = false;
     strcpy((w+4)->ranChar, "VZBRGITYUPSDNHLXAWMJQOFECK");
-    // (w+5)->number = 5;
-    // strcpy((w+5)->ranChar, "JPGVOUMFYQBENHZRDKASXLICTW");
-    // (w+6)->number = 6;
-    // strcpy((w+6)->ranChar, "NZJHGRCXMYSWBOUFAIVLPEKQDT");
-    // (w+7)->number = 7;
-    // strcpy((w+7)->ranChar, "FKQHTLXOCBJSPDZRAMEWNIUYGV");
     // Converter as letras em inteiros
     for (unsigned int a = 0; a < 5; a++) {
         (w+a)->pos = 0;
@@ -73,7 +67,14 @@ char rollL(walze *w, unsigned int rol, char let) {
     static const char *TAG = "rollL";
     static unsigned int ascii = 65;
     unsigned int in = (unsigned int)let - ascii;
-    unsigned int aux = in + (w+rol)->pos;
+    int aux;
+    if (rol > 0){
+        aux = (in + (w+rol)->pos) - (w+(rol-1))->pos;
+        if (aux < 0) aux = 0;
+    }
+    else {
+        aux = in + (w+rol)->pos;
+    }
     if (aux > 25) aux %= 26;
     ESP_LOGI(TAG, "%c -> r%d -> %c", let, (w+rol)->number, (w+rol)->ranChar[aux]);
     let = (char)(ascii + (w+rol)->ranInt[aux]);
@@ -86,7 +87,14 @@ char rollR(walze *w, unsigned int rol, char let) {
     char *in = strchr((w+rol)->ranChar, let);
     if (in != NULL) {
         unsigned int pos = in - (w+rol)->ranChar;
-        unsigned int aux = pos + (w+rol)->pos;
+        int aux;
+        if (rol > 1){
+            aux = pos + (w+rol)->pos;
+        }
+        else {
+            aux = (pos + (w+rol)->pos) - (w+(rol+1))->pos;
+            if (aux < 0) aux = 0;
+        }
         if (aux > 25) aux %= 26;
         ESP_LOGI(TAG, "%c -> r%d -> %c", let, (w+rol)->number, (char)(ascii + aux));
         let = (char)(ascii + aux);
@@ -97,17 +105,9 @@ char rollR(walze *w, unsigned int rol, char let) {
 }
 
 char gear(walze *w, char let) {
-    //Giro dos rotores
-    // (w+0)->pos++;
-    if ((w+0)->pos > 25){
-        (w+0)->pos = 0;
-        (w+1)->pos++;
-        if ((w+1)->pos > 25){
-            (w+1)->pos = 0;
-            (w+2)->pos++;
-            if ((w+2)->pos > 25) (w+2)->pos = 0;
-        }
-    }
+    static const char *TAG = "gear";
+    turnRoll(w);
+    // ESP_LOGI(TAG, "Posicao: %d", (w+0)->pos);
     let = socket(let);
     for (unsigned int a = 0; a < 3; a++) {
         let = rollL(w, a, let);
@@ -156,4 +156,18 @@ char socket(char let) {
     // ESP_LOGI(TAG, "Pos %d", pos);
     ESP_LOGI(TAG, "%c -> s%c -> %c", let, let, let);
     return let;
+}
+
+void turnRoll(walze *w) {
+    //Giro dos rotores
+    (w+0)->pos++;
+    if ((w+0)->pos > 25){
+        (w+0)->pos = 0;
+        (w+1)->pos++;
+        if ((w+1)->pos > 25){
+            (w+1)->pos = 0;
+            (w+2)->pos++;
+            if ((w+2)->pos > 25) (w+2)->pos = 0;
+        }
+    }
 }

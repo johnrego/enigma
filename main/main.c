@@ -8,7 +8,7 @@
 void app_main(void){
     static const char* TAG = "app_main";
     printf("Maquina enigma.\n");
-    unsigned int rol[3] = {0, 4, 2};
+    unsigned int rol[3] = {0, 1, 2};
     unsigned int seq[3] = {0, 0, 0};
     walze *walzes = rolInit(rol, seq);
     if (walzes == NULL) {
@@ -16,10 +16,10 @@ void app_main(void){
         return;
     }
     printf("Configuração diaria aplicada.\n\n");
-    char out = gear(walzes, 'C');
+    char out = gear(walzes, 'W');
     printf("Saida: %c; ASCII: %d\n", out, (int)out);
-    out = gear(walzes, 'W');
-    printf("Saida: %c; ASCII: %d\n", out, (int)out);
+    // out = gear(walzes, 'Z');
+    // printf("Saida: %c; ASCII: %d\n", out, (int)out);
     // char msg[5] = "AL";
     // printf("Codificando: %s.\n", msg);
     // // printf("Saida: ");

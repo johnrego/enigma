@@ -3,7 +3,7 @@
 PROJECT_NAME=$(pwd | rev | cut -d '/' -f 1 | rev)
 PROJECT_ROOT_DIR=$(pwd)
 # DOCKER_IMAGE_NAME=mbenabda/esp8266-rtos-sdk
-DOCKER_IMAGE_NAME=esp8266-container
+DOCKER_IMAGE_NAME=esp-container
 
 echo "$PROJECT_NAME"
 echo "$PROJECT_ROOT_DIR"

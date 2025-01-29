@@ -13,5 +13,6 @@ char rollR(walze *w, unsigned int rol, char let);
 char gear(walze *w, char let);
 char socket(char let);
 char reflect(char let);
+void turnRoll(walze *w);
 
 #endif
