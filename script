@@ -26,6 +26,19 @@ then
   #Monitor the ESP chip's serial output
   docker run -it --rm -v $PROJECT_ROOT_DIR:/project --privileged -v /dev:/dev -w /project $DOCKER_IMAGE_NAME make monitor
 fi
+if [ $# -eq 1 ] && [ $1 == "clean" ];
+then
+  echo "Limpando arquivos compilado do projeto $PROJECT_NAME"
+  sudo rm -r build
+  sudo rm sdkconfig sdkconfig.old
+fi
+if [ $# -eq 1 ] && [ $1 == "include" ];
+then
+  echo "Gerando includePath com base em ~/Downloads/ESP8266_RTOS_SDK/"
+  for a in $(find ~/Downloads/ESP8266_RTOS_SDK/ -type d | grep include); do
+    echo "\"$a\","
+  done
+fi
 if [ $# -eq 2 ] && [ $1 == "flash" ] && [ $2 == "monitor" ];
 then
   #Flash and Monitor the ESP

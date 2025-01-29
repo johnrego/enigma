@@ -8,27 +8,23 @@
 void app_main(void){
     static const char* TAG = "app_main";
     printf("Maquina enigma.\n");
-    unsigned int rol[3] = {0, 1, 2};
-    unsigned int seq[3] = {0, 0, 0};
-    walze *walzes = rolInit(rol, seq);
+    unsigned int rol[2] = {0, 1};
+    unsigned int seq[2] = {0, 0};
+    walze *walzes = rolInit(rol, seq, 2);
     if (walzes == NULL) {
         ESP_LOGI(TAG, "Erro ao alocar memória para walzes.");
         return;
     }
-    printf("Configuração diaria aplicada.\n\n");
-    char out = gear(walzes, 'W');
-    printf("Saida: %c; ASCII: %d\n", out, (int)out);
-    // out = gear(walzes, 'Z');
+    // printf("Configuração diaria aplicada.\n\n");
+    // char out = gear(walzes, 'D', 2);
     // printf("Saida: %c; ASCII: %d\n", out, (int)out);
-    // char msg[5] = "AL";
-    // printf("Codificando: %s.\n", msg);
-    // // printf("Saida: ");
-    // for (unsigned int a = 0; a < strlen(msg); a++) {
-    //     // Pressionando uma tecla o primeiro rotor da 1 passo
-    //     seq[0]++;
-    //     printf("%c\n", roll(walzes, rol, seq, msg[a]));
-    // }
-    // // printf("\n");
+    char msg[] = "ABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCD";
+    printf("Codificando: %s.\n", msg);
+    printf("Saida: ");
+    for (unsigned int a = 0; a < strlen(msg); a++) {
+        printf("%c", gear(walzes, msg[a], 2));
+    }
+    printf("\n");
     free(walzes);
     printf("Fim.\n");
 }
