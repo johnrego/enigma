@@ -19,11 +19,16 @@ void app_main(void){
     // printf("Configuração diaria aplicada.\n\n");
     // char out = gear(walzes, 'D', quantity);
     // printf("Saida: %c; ASCII: %d\n", out, (int)out);
-    char msg[] = "DABABCDCDABABCDABCDCDABABCDCDABCDABABCDCDABABCDABCDCDABABCDCDABCDABABCDCDABABCDABCDCDABABCDC";
+    char msg[] = "DABA CBAB";
     printf("Codificando: %s.\n", msg);
     printf("Saida: ");
     for (unsigned int a = 0; a < strlen(msg); a++) {
-        printf("%c", gear(walzes, msg[a], quantity));
+        if (msg[a] == ' '){
+            printf("%c", msg[a]);
+        }
+        else{
+            printf("%c", gear(walzes, msg[a], quantity));
+        }
     }
     printf("\n");
     ESP_LOGI(TAG, "Rotor %d Posicao: %d", 0, (walzes+0)->pos);
