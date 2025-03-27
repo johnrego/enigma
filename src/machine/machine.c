@@ -1,33 +1,30 @@
 #include <string.h>
 #include <stdlib.h>
-#include "esp_log.h"
+#include "log.h"
 #include "machine.h"
 
-#define LOG_LOCAL_LEVEL ESP_LOG_ERROR
-
 walze *rolInit(unsigned int rol[3], unsigned int seq[3], unsigned int quantity) {
-    static const char *TAG = "rolInit";
     walze *w = malloc(5 * sizeof(walze));
     if (w == NULL) {
-        ESP_LOGI(TAG, "Erro ao alocar memória para walzes.");
+        log_error("Erro ao alocar memória para walzes.");
         return NULL;
     }
     // Define o numero do rotor e sua sequencia de letras
     (w+0)->number = 0;
     (w+0)->inMac = false;
-    strcpy((w+0)->ranChar, "ABCD");
+    strcpy((w+0)->ranChar, "ABCDEFGHIJKLMNOPQRSTUVWXYZ");
     (w+1)->number = 1;
     (w+1)->inMac = false;
-    strcpy((w+1)->ranChar, "ABCD");
+    strcpy((w+1)->ranChar, "ABCDEFGHIJKLMNOPQRSTUVWXYZ");
     (w+2)->number = 2;
     (w+2)->inMac = false;
-    strcpy((w+2)->ranChar, "ABCD");
+    strcpy((w+2)->ranChar, "ABCDEFGHIJKLMNOPQRSTUVWXYZ");
     (w+3)->number = 3;
     (w+3)->inMac = false;
-    strcpy((w+3)->ranChar, "ABCD");
+    strcpy((w+3)->ranChar, "ESOVPZJAYQUIRHXLNFTGKDCMWB");
     (w+4)->number = 4;
     (w+4)->inMac = false;
-    strcpy((w+4)->ranChar, "ABCD");
+    strcpy((w+4)->ranChar, "VZBRGITYUPSDNHLXAWMJQOFECK");
     // Converter as letras em inteiros
     for (unsigned int a = 0; a < 5; a++) {
         (w+a)->pos = 0;
@@ -37,15 +34,14 @@ walze *rolInit(unsigned int rol[3], unsigned int seq[3], unsigned int quantity) 
                 (w+a)->pos = seq[b];
             }
         }
-        static unsigned int ascii = 65;
         for (unsigned int b = 0; b < strlen((w+a)->ranChar); b++) {
-            (w+a)->ranInt[b] = (int)(w+a)->ranChar[b] - ascii;
+            (w+a)->ranInt[b] = (int)(w+a)->ranChar[b] - 'A';
         }
     }
     // Seleciona apenas rotores que serao usados
     walze *wUse = malloc(quantity * sizeof(walze));
     if (wUse == NULL) {
-        ESP_LOGI(TAG, "Erro ao alocar memória para walzes.");
+        log_error("Erro ao alocar memória para walzes.");
         return NULL;
     }
     for (unsigned int a = 0; a < quantity; a++) {
@@ -66,46 +62,37 @@ walze *rolInit(unsigned int rol[3], unsigned int seq[3], unsigned int quantity) 
 }
 
 char rollL(walze *w, unsigned int rol, char let) {
-    static const char *TAG = "rollL";
-    static unsigned int ascii = 65;
-    unsigned int in = (unsigned int)let - ascii;
-    int aux;
-    if (rol > 0){
-        aux = (in + (w+rol)->pos) % 4;
+    unsigned int in = (unsigned int)let - 'A';
+    int aux = (in + (w+rol)->pos) % 26;
+    log_trace("%c -> r%d -> %c", let, (w+rol)->number, (char)('A' + (w+rol)->ranInt[aux]));
+    char tmp = (char)('A' + (w+rol)->ranInt[aux]);
+    if ((tmp < 65) || (tmp > 90)){
+        log_warn("A letra gerada %d, em funcao de %c nao esta no escopo.", tmp, let);
     }
-    else {
-        aux = (in - (w+rol)->pos) % 4;
-    }
-    ESP_LOGI(TAG, "%c -> r%d -> %c", let, (w+rol)->number, (w+rol)->ranChar[aux]);
-    let = (char)(ascii + (w+rol)->ranInt[aux]);
-    return let;
+    return (char)('A' + (w+rol)->ranInt[aux]);
 }
 
 char rollR(walze *w, unsigned int rol, char let) {
-    static const char *TAG = "rollR";
-    static unsigned int ascii = 65;
     char *in = strchr((w+rol)->ranChar, let);
     if (in != NULL) {
         unsigned int pos = in - (w+rol)->ranChar;
-        int aux;
-        if (rol > 0){
-            aux = (pos - (w+rol)->pos) % 4;
+        int aux = (int)(pos - (w+rol)->pos) % 26;
+        if (aux < 0 ) aux = 26 + aux;
+        log_debug("%d", aux);
+        log_trace("%c -> r%d -> %c", let, (w+rol)->number, (char)('A' + aux));
+        char tmp = (char)('A' + aux);
+        if ((tmp < 65) || (tmp > 90)){
+            log_warn("A letra gerada %d, em funcao de %c nao esta no escopo.", tmp, let);
         }
-        else {
-            aux = (pos + (w+rol)->pos) % 4;
-        }
-        ESP_LOGI(TAG, "%c -> r%d -> %c", let, (w+rol)->number, (char)(ascii + aux));
-        let = (char)(ascii + aux);
-        return let;
+        return (char)('A' + aux);
     }
-    ESP_LOGI(TAG, "Letra nao encontrada no rotor %d", (w+rol)->number);
+    log_trace("Letra nao encontrada no rotor %d", (w+rol)->number);
     return let;
 }
 
 char gear(walze *w, char let, unsigned int quantity) {
-    // static const char *TAG = "gear";
     turnRoll(w);
-    // let = socket(let);
+    let = socket(let);
     for (unsigned int a = 0; a < quantity; a++) {
         let = rollL(w, a, let);
     }
@@ -113,29 +100,27 @@ char gear(walze *w, char let, unsigned int quantity) {
     for (int a = quantity - 1; a > -1; a--) {
         let = rollR(w, a, let);
     }
-    // let = socket(let);
+    let = socket(let);
     return let;
 }
 
 char reflect(char let) {
-    static const char *TAG = "reflect";
-    char seq[4] = "ABCD";
+    char seq[26] = "FSOKANUERHMBTIYCWLQPZXVGJD";
     char *in = strchr(seq, let);
     if (in != NULL) {
         unsigned int pos = in - seq;
         if (pos % 2 == 0) {
-            ESP_LOGI(TAG, "%c -> rf -> %c", let, seq[pos+1]);
+            log_trace("%c -> rf -> %c", let, seq[pos+1]);
             return seq[pos+1];
         }
-        ESP_LOGI(TAG, "%c -> rf -> %c", let, seq[pos-1]);
+        log_trace("%c -> rf -> %c", let, seq[pos-1]);
         return seq[pos-1];
     }
-    ESP_LOGI(TAG, "Letra nao encontrada no refletor");
+    log_trace("Letra nao encontrada no refletor");
     return let;
 }
 
 char socket(char let) {
-    static const char *TAG = "socket";
     // Dia 1
     // char seq[20] = "NPJVLYIXKQAODZCRFTEM";
     // Dia 22
@@ -144,27 +129,26 @@ char socket(char let) {
     unsigned int pos = in - seq;
     if (pos < 20) {
         if (pos % 2 == 0) {
-            ESP_LOGI(TAG, "%c -> s%c -> %c", let, let, seq[pos+1]);
+            log_trace("%c -> s%c -> %c", let, let, seq[pos+1]);
             return seq[pos+1];
         }
-        ESP_LOGI(TAG, "%c -> s%c -> %c", let, let, seq[pos-1]);
+        log_trace("%c -> s%c -> %c", let, let, seq[pos-1]);
         return seq[pos-1];
     }
-    // ESP_LOGI(TAG, "Pos %d", pos);
-    ESP_LOGI(TAG, "%c -> s%c -> %c", let, let, let);
+    log_trace("%c -> s%c -> %c", let, let, let);
     return let;
 }
 
 void turnRoll(walze *w) {
     //Giro dos rotores
     (w+0)->pos++;
-    if ((w+0)->pos > 3){
+    if ((w+0)->pos > 25){
         (w+0)->pos = 0;
         (w+1)->pos++;
-        if ((w+1)->pos > 3){
+        if ((w+1)->pos > 25){
             (w+1)->pos = 0;
             (w+2)->pos++;
-            if ((w+2)->pos > 3) (w+2)->pos = 0;
+            if ((w+2)->pos > 25) (w+2)->pos = 0;
         }
     }
 }
