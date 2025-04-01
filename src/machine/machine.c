@@ -12,13 +12,13 @@ walze *rolInit(unsigned int rol[3], unsigned int seq[3], unsigned int quantity) 
     // Define o numero do rotor e sua sequencia de letras
     (w+0)->number = 0;
     (w+0)->inMac = false;
-    strcpy((w+0)->ranChar, "ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+    strcpy((w+0)->ranChar, "EKMFLGDQVZNTOWYHXUSPAIBRCJ");
     (w+1)->number = 1;
     (w+1)->inMac = false;
-    strcpy((w+1)->ranChar, "ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+    strcpy((w+1)->ranChar, "AJDKSIRUXBLHWTMCQGZNPYFVOE");
     (w+2)->number = 2;
     (w+2)->inMac = false;
-    strcpy((w+2)->ranChar, "ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+    strcpy((w+2)->ranChar, "BDFHJLCPRTXVZNYEIWGAKMUSQO");
     (w+3)->number = 3;
     (w+3)->inMac = false;
     strcpy((w+3)->ranChar, "ESOVPZJAYQUIRHXLNFTGKDCMWB");
@@ -78,7 +78,6 @@ char rollR(walze *w, unsigned int rol, char let) {
         unsigned int pos = in - (w+rol)->ranChar;
         int aux = (int)(pos - (w+rol)->pos) % 26;
         if (aux < 0 ) aux = 26 + aux;
-        log_debug("%d", aux);
         log_trace("%c -> r%d -> %c", let, (w+rol)->number, (char)('A' + aux));
         char tmp = (char)('A' + aux);
         if ((tmp < 65) || (tmp > 90)){
@@ -122,9 +121,9 @@ char reflect(char let) {
 
 char socket(char let) {
     // Dia 1
-    // char seq[20] = "NPJVLYIXKQAODZCRFTEM";
+    char seq[20] = "NPJVLYIXKQAODZCRFTEM";
     // Dia 22
-    char seq[20] = "EYJLAKNVFZCTHPMXBQGS";
+    // char seq[20] = "EYJLAKNVFZCTHPMXBQGS";
     char *in = strchr(seq, let);
     unsigned int pos = in - seq;
     if (pos < 20) {

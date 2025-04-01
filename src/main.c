@@ -5,10 +5,10 @@
 #include "machine.h"
 
 int main() {
-    log_set_level(3);
+    log_set_level(1);
     printf("Maquina enigma.\n");
-    unsigned int rol[3] = {0, 1, 2};
-    unsigned int seq[3] = {0, 0, 0};
+    unsigned int rol[3] = {2, 0, 3};
+    unsigned int seq[3] = {18, 24, 15};
     unsigned int quantity = 3;
     walze *walzes = rolInit(rol, seq, quantity);
     if (walzes == NULL) {
@@ -18,8 +18,8 @@ int main() {
     printf("Configuração diaria aplicada.\n");
     // char out = gear(walzes, 'D', quantity);
     // printf("Saida: %c; ASCII: %d\n", out, (int)out);
-    // char msg[15] = "NADA A DECLARAR";
-    char msg[15] = "AFGS J MJYWUVFP";
+    // char msg[57] = "ENCONTRO MARCADO PARA AMANHA AO MEIO DIA NA PRACA CENTRAL";
+    char msg[57] = "YCXSGAYP ASEUGVB KPCS BFKPGL DS BPND LLK PE YNBWL BWDZMKF";
     printf("Codificando: %s.\n", msg);
     printf("Saida: ");
     for (unsigned int a = 0; a < strlen(msg); a++) {
