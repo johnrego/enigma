@@ -24,3 +24,11 @@ Configuração para o dia 01:
 
 ## Exemplo
 A mensagem `ENCONTRO MARCADO PARA AMANHA AO MEIO DIA NA PRACA CENTRAL` dia 01 do mês resulta em `YCXSGAYP ASEUGVB KPCS BFKPGL DS BPND LLK PE YNBWL BWDZMKF`.
+
+## Compilação e Execução
+```
+mkdir release && cd release
+cmake -DCMAKE_BUILD_TYPE=Release ..
+make
+./enigma
+```
