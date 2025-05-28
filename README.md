@@ -16,7 +16,7 @@ A ação de embaralhamento dos rotores Enigma mostrada por duas letras consecuti
 ## Configuração
 A configuração da máquina Enigma mudava diariamente à meia-noite. Os operadores escolhiam uma "configuração de indicador" e um "indicador" aleatoriamente, cada um com três letras. A configuração indicadora era enviada em Morse em claro. 
 A máquina Enigma era usada pelos nazistas para transmitir ordens de guerra criptografadas durante a Segunda Guerra Mundial. O aparelho tinha 129 trilhões de possibilidades de regulagem. 
-![Configuração diáia de rotores, deslocamento e tomadas.](https://www.chargebee.com/blog/images/posts/morse-code.png)
+![Configuração diáia de rotores, deslocamento e tomadas.](enigma-codes.jpg)
 Configuração para o dia 01:
   * Rotores: III, I e IV;
   * Deslocamentos: 18, 24 e 15;
